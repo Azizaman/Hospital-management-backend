@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req, res: Response) => {
   try {
     const tasks = await prisma.pantryTask.findMany({
       include: {
@@ -17,6 +17,7 @@ router.get("/", async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ success: true, tasks });
+    console.log(req.accepted)
   } catch (error) {
     console.error("Error fetching tasks:", error);
     res.status(500).json({ success: false, error: error.message });

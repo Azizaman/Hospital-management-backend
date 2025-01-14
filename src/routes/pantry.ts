@@ -4,10 +4,11 @@ import { PrismaClient } from "@prisma/client";
 const router = Router();
 const prisma = new PrismaClient();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req, res: Response) => {
   try {
     const pantry = await prisma.pantry.findMany();
     res.status(200).json({ success: true, pantry });
+    console.log(req.body)
   } catch (error) {
     res.status(500).json({ success: false, error: "Error fetching pantry details" });
   }

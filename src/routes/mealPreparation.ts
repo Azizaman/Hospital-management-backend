@@ -5,10 +5,11 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // Fetch the preparation status of all meals
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req, res: Response) => {
   try {
     const meals = await prisma.mealPreparation.findMany();
     res.status(200).json({ success: true, meals });
+    console.log(req.body)
   } catch (error) {
     res.status(500).json({ success: false, error: "Error fetching meals" });
   }

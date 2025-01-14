@@ -13,7 +13,6 @@ const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
-// Fetch the delivery status of all meals
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const mealDeliveries = yield prisma.mealDelivery.findMany({
@@ -22,6 +21,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             },
         });
         res.status(200).json({ success: true, mealDeliveries });
+        console.log(req.body);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -32,7 +32,6 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 }));
-// Fetch the delivery status for a specific meal
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     if (!id || isNaN(parseInt(id))) {
@@ -61,7 +60,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 }));
-// Update the delivery status of a meal
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { status, notes } = req.body;
@@ -90,3 +88,4 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 exports.default = router;
+//# sourceMappingURL=mealDelivery.js.map

@@ -13,35 +13,32 @@ const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
-// Get all patients
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const patients = yield prisma.patient.findMany();
+        console.log(req.path, patients);
         res.json(patients);
     }
     catch (error) {
         res.status(500).json({ error: error.message });
     }
 }));
-// Get all patients
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const patients = yield prisma.patient.findMany();
         res.json(patients);
+        console.log(req.headers);
     }
     catch (error) {
         res.status(500).json({ error: error.message });
     }
 }));
-// Add a new patient
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, disease, roomNumber, age, gender, email } = req.body;
-    // Validate required fields
     if (!name || !age || !disease || !roomNumber) {
         res.status(400).json({ success: false, message: "Missing required fields" });
         return;
     }
-    // Ensure data types are correct (for example, age and roomNumber should be numbers)
     if (typeof age !== "number" || typeof roomNumber !== "number") {
         res.status(400).json({ success: false, message: "Invalid data types for age or roomNumber" });
         return;
@@ -54,7 +51,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 roomNumber,
                 age,
                 gender: gender || null,
-                email // gender is optional, so we can set it to null if not provided
+                email
             },
         });
         res.status(201).json({ success: true, message: "Patient created successfully", patient });
@@ -131,3 +128,4 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 exports.default = router;
+//# sourceMappingURL=patient.js.map

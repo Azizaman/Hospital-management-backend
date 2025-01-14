@@ -1,15 +1,16 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import {  PrismaClient } from '@prisma/client';
 import express from 'express';
 
 
 const router=express.Router();
 const prisma= new PrismaClient();
 
-router.get('/',async(requestAnimationFrame,res)=>{
+router.get('/',async(req,res)=>{
 
     try{
         const foodchart=await prisma.foodChart.findMany();
     res.status(200).json({success: true, foodchart });
+    console.log(req.body)
 
     }
     catch (error: unknown) {

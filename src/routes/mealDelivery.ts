@@ -5,7 +5,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // Fetch the delivery status of all meals
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req, res: Response) => {
   try {
     const mealDeliveries = await prisma.mealDelivery.findMany({
       include: {
@@ -13,6 +13,7 @@ router.get("/", async (req: Request, res: Response) => {
       },
     });
     res.status(200).json({ success: true, mealDeliveries });
+    console.log(req.body)
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ success: false, error: error.message });

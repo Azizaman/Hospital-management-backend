@@ -1,37 +1,47 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+// Extend Express Request to include 'user' property
+interface CustomRequest extends Request {
+  user?: any;
+}
+
+
+
+// Token verification middleware
+export const verifyToken = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Bearer
 
   if (!token) {
-     res.status(401).json({ message: 'Access denied. No token provided.' });
+     res.status(403).json({ message: "No token provided" });
      return;
   }
 
-  jwt.verify(token, process.env.JWT_SECRET || '', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Invalid or expired token.' });
-    }
+  try {
+    const decoded = await new Promise<any>((resolve, reject) => {
+      jwt.verify(token, process.env.JWT_SECRET || '', (err, decoded) => {
+        if (err) {
+          reject(new Error("Invalid token"));
+        } else {
+          resolve(decoded);
+        }
+      });
+    });
 
-    // Assuming the payload has `id`, `email`, and `role`:
-    req.user = decoded;  // Add the decoded information to the request object
-    next();
-  });
+    req.user = decoded; // Attach decoded user info to the request
+    next(); // Proceed to the next middleware or route handler
+  } catch (err) {
+     res.status(403).json({ message: "Invalid token" });
+     return;
+  }
 };
 
-
-
-export const verifyRole = (allowedRoles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const userRole = req.user?.role; // assuming the user role is stored in req.user (from the JWT)
-
-    if (!allowedRoles.includes(userRole)) {
-       res.status(403).json({ message: "Access denied. You don't have permission to access this resource." });
-       return;
+// Role verification middleware
+export const verifyRole = (roles: string[]) => {
+  return (req: CustomRequest, res: Response, next: NextFunction): void => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return; res.status(403).json({ message: 'Forbidden' });
     }
-
-    // Proceed to the next middleware or route handler
-    next();
+    next(); // User has required role, proceed
   };
 };

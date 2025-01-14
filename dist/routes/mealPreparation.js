@@ -13,11 +13,11 @@ const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
-// Fetch the preparation status of all meals
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const meals = yield prisma.mealPreparation.findMany();
         res.status(200).json({ success: true, meals });
+        console.log(req.body);
     }
     catch (error) {
         res.status(500).json({ success: false, error: "Error fetching meals" });
@@ -25,7 +25,6 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { foodChartId, status = "pending", notes } = req.body;
-    // Validate input
     if (!foodChartId) {
         res.status(400).json({
             success: false,
@@ -34,18 +33,16 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     try {
-        // Create a new MealPreparation entry
         const newMealPreparation = yield prisma.mealPreparation.create({
             data: {
-                foodChartId, // Required field, must be a valid FoodChart ID
-                status, // Default to "pending" if not provided
-                notes, // Optional field
+                foodChartId,
+                status,
+                notes,
             },
             include: {
-                foodChart: true, // Include the related FoodChart details if needed in the response
+                foodChart: true,
             },
         });
-        // Respond with success and the new entry
         res.status(201).json({
             success: true,
             message: "Meal Preparation created successfully.",
@@ -61,7 +58,6 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 }));
-// Fetch preparation status for a specific meal
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -76,7 +72,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, error: "Error fetching meal" });
     }
 }));
-// Update preparation status for a meal
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { status } = req.body;
@@ -89,3 +84,4 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 exports.default = router;
+//# sourceMappingURL=mealPreparation.js.map

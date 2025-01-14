@@ -17,10 +17,11 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tasks = yield prisma.pantryTask.findMany({
             include: {
-                pantryStaff: true, // Include related pantryStaff details
+                pantryStaff: true,
             },
         });
         res.status(200).json({ success: true, tasks });
+        console.log(req.accepted);
     }
     catch (error) {
         console.error("Error fetching tasks:", error);
@@ -29,13 +30,11 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { pantryStaffId, task, status } = req.body;
-    // Validate required fields
     if (!pantryStaffId || !task) {
         res.status(400).json({ success: false, message: "Missing required fields" });
         return;
     }
     try {
-        // Ensure pantryStaffId exists in the Pantry table
         const pantryStaffExists = yield prisma.pantry.findUnique({
             where: { id: pantryStaffId },
         });
@@ -43,7 +42,6 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(404).json({ success: false, message: "Pantry staff not found" });
             return;
         }
-        // Create the task
         const newTask = yield prisma.pantryTask.create({
             data: {
                 pantryStaffId,
@@ -85,7 +83,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, error: "Error fetching task" });
     }
 }));
-// Update task status
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { status } = req.body;
@@ -98,3 +95,4 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 exports.default = router;
+//# sourceMappingURL=pantryTasks.js.map

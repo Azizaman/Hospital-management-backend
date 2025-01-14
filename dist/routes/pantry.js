@@ -17,12 +17,12 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const pantry = yield prisma.pantry.findMany();
         res.status(200).json({ success: true, pantry });
+        console.log(req.body);
     }
     catch (error) {
         res.status(500).json({ success: false, error: "Error fetching pantry details" });
     }
 }));
-// Add pantry staff details
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { staffName, contactInfo, location } = req.body;
     if (!staffName || !contactInfo || !location) {
@@ -37,7 +37,6 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ success: false, error: "Error adding pantry staff" });
     }
 }));
-// Fetch pantry staff by ID
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -52,7 +51,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, error: "Error fetching pantry staff" });
     }
 }));
-// Update pantry staff details
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { staffName, contactInfo, location } = req.body;
@@ -67,7 +65,6 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, error: "Error updating staff details" });
     }
 }));
-// Delete pantry staff by ID
 router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -79,3 +76,4 @@ router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 exports.default = router;
+//# sourceMappingURL=pantry.js.map

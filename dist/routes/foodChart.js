@@ -16,10 +16,11 @@ const client_1 = require("@prisma/client");
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const prisma = new client_1.PrismaClient();
-router.get('/', (requestAnimationFrame, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const foodchart = yield prisma.foodChart.findMany();
         res.status(200).json({ success: true, foodchart });
+        console.log(req.body);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -66,16 +67,14 @@ router.post('/:patientId', (req, res) => __awaiter(void 0, void 0, void 0, funct
         return;
     }
     try {
-        // Check if the patient exists
         const patient = yield prisma.patient.findUnique({ where: { id: parseInt(patientId) } });
         if (!patient) {
             res.status(404).json({ success: false, message: "Patient not found" });
             return;
         }
-        // Create the food chart
         const foodChart = yield prisma.foodChart.create({
             data: {
-                patientId: parseInt(patientId), // Link to the specific patient
+                patientId: parseInt(patientId),
                 morningMeal,
                 eveningMeal,
                 nightMeal,
@@ -94,7 +93,6 @@ router.post('/:patientId', (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
     }
 }));
-// Fetch a single food chart by ID
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     if (!id || isNaN(parseInt(id))) {
@@ -118,7 +116,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 }));
-// Update a food chart by ID
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { morningMeal, eveningMeal, nightMeal, ingredients, instructions } = req.body;
@@ -142,7 +139,6 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 }));
-// Delete a food chart by ID
 router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     if (!id || isNaN(parseInt(id))) {
@@ -163,3 +159,4 @@ router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 }));
 exports.default = router;
 router.put('/food-charts');
+//# sourceMappingURL=foodChart.js.map

@@ -1,13 +1,14 @@
-import { Express,Router } from "express";
+import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 
 const router = Router();
 const prisma = new PrismaClient();
 
 // Get all patients
-router.get("/", async (req, res) => {
+router.get("/", async (req,res) => {
     try {
         const patients = await prisma.patient.findMany();
+        console.log(req.path, patients)
         res.json(patients);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -17,10 +18,11 @@ router.get("/", async (req, res) => {
 
 
 // Get all patients
-router.get("/", async (req, res) => {
+router.get("/", async (req,res) => {
     try {
         const patients = await prisma.patient.findMany();
         res.json(patients);
+        console.log(req.headers);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

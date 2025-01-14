@@ -18,7 +18,6 @@ const client_1 = require("@prisma/client");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
-// Register user
 router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, role } = req.body;
     if (!email || !password || !role) {
@@ -26,24 +25,21 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     try {
-        // Hash password
         const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-        // Create user
         const user = yield prisma.user.create({
             data: {
                 email,
                 password: hashedPassword,
-                role: role || 'delivery', // Default role to 'delivery'
+                role: role || 'delivery',
             },
         });
         res.status(201).json({ message: 'User created successfully', user });
     }
     catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ message: 'Error while registering the user', error });
     }
 }));
-// Login user
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -51,7 +47,6 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return;
     }
     try {
-        // Find user
         const user = yield prisma.user.findUnique({
             where: { email },
         });
@@ -59,19 +54,18 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
-        // Compare password
         const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
-        // Create token
         const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
         res.json({ message: 'Login successful', token, role: user.role });
     }
     catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         res.status(500).json({ message: 'Error logging in', error });
     }
 }));
 exports.default = router;
+//# sourceMappingURL=authRoutes.js.map
