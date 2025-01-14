@@ -18,6 +18,7 @@ ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
 # Step 7: Run Prisma migrations (to ensure your database schema is up-to-date)
+RUN npx prisma generate
 RUN npx prisma migrate deploy
 
 # Step 8: Build the TypeScript code into the dist folder
@@ -31,3 +32,6 @@ EXPOSE 3000
 
 # Step 11: Start the app
 CMD ["npm", "start"]
+
+
+
